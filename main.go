@@ -33,24 +33,24 @@ func main() {
 		if err := validate.Struct(&v.Data[i]); err != nil {
 			continue
 		}
-		kodeString := strings.Split(v.Data[i].Code, ".")
-		kodeKecamatan := fmt.Sprintf("%s.%s.%s", kodeString[0], kodeString[1], kodeString[2])
+		codeString := strings.Split(v.Data[i].Code, ".")
+		districtCode := fmt.Sprintf("%s.%s.%s", codeString[0], codeString[1], codeString[2])
 		village := models.Village{
 			CoreInfo: models.CoreInfo{
 				Location: models.Location{
 					Latitude:  v.Data[i].Latitude,
 					Longitude: v.Data[i].Longitude,
 				},
-				Name:  v.Data[i].Nama,
+				Name:  v.Data[i].Name,
 				Level: "KELURAHAN",
 				Code:  v.Data[i].Code,
 			},
 		}
 
-		if _, ok := districtVillageMap[kodeKecamatan]; !ok {
-			districtVillageMap[kodeKecamatan] = []models.Village{village}
+		if _, ok := districtVillageMap[districtCode]; !ok {
+			districtVillageMap[districtCode] = []models.Village{village}
 		} else {
-			districtVillageMap[kodeKecamatan] = append(districtVillageMap[kodeKecamatan], village)
+			districtVillageMap[districtCode] = append(districtVillageMap[districtCode], village)
 		}
 	}
 
@@ -71,9 +71,9 @@ func main() {
 		if err := validate.Struct(&d.Data[i]); err != nil {
 			continue
 		}
-		kodeString := strings.Split(d.Data[i].Code, ".")
-		kodeKota := fmt.Sprintf("%s.%s", kodeString[0], kodeString[1])
-		kodeKecamatan := fmt.Sprintf("%s.%s.%s", kodeString[0], kodeString[1], kodeString[2])
+		codeString := strings.Split(d.Data[i].Code, ".")
+		cityCode := fmt.Sprintf("%s.%s", codeString[0], codeString[1])
+		districtCode := fmt.Sprintf("%s.%s.%s", codeString[0], codeString[1], codeString[2])
 		district := models.District{
 			CoreInfo: models.CoreInfo{
 				Location: models.Location{
@@ -81,15 +81,15 @@ func main() {
 					Longitude: d.Data[i].Longitude,
 				},
 				Level: "KECAMATAN",
-				Name:  d.Data[i].Nama,
+				Name:  d.Data[i].Name,
 				Code:  d.Data[i].Code,
 			},
-			Villages: districtVillageMap[kodeKecamatan],
+			Villages: districtVillageMap[districtCode],
 		}
-		if _, ok := cityDistrictMap[kodeKota]; !ok {
-			cityDistrictMap[kodeKota] = []models.District{district}
+		if _, ok := cityDistrictMap[cityCode]; !ok {
+			cityDistrictMap[cityCode] = []models.District{district}
 		} else {
-			cityDistrictMap[kodeKota] = append(cityDistrictMap[kodeKota], district)
+			cityDistrictMap[cityCode] = append(cityDistrictMap[cityCode], district)
 		}
 	}
 
@@ -110,7 +110,7 @@ func main() {
 		if err := validate.Struct(&c.Data[i]); err != nil {
 			continue
 		}
-		kodeKota := fmt.Sprintf("%.2f", c.Data[i].Code)
+		cityCode := fmt.Sprintf("%.2f", c.Data[i].Code)
 		cities = append(cities, models.City{
 			CoreInfo: models.CoreInfo{
 				Location: models.Location{
@@ -118,25 +118,26 @@ func main() {
 					Latitude:  c.Data[i].Latitude,
 				},
 				Level: "KOTA",
-				Name:  c.Data[i].Nama,
-				Code:  kodeKota,
+				Name:  c.Data[i].Name,
+				Code:  cityCode,
 			},
-			Districts: cityDistrictMap[kodeKota],
+			Districts: cityDistrictMap[cityCode],
 		})
 	}
 
 	fmt.Printf("%v\n\n", cities[0].CoreInfo)
 
-	for _, d := range cities[0].Districts {
-		fmt.Printf("\t%v\n\n", d.CoreInfo)
+	for _, d := range cities[20].Districts {
+		fmt.Printf("\n\t%v\n\n", d.CoreInfo)
 		for _, v := range d.Villages {
-			fmt.Printf("\t\t%v\n\n", v.CoreInfo)
+			fmt.Printf("\t\t%v\n", v.CoreInfo)
 		}
+
 	}
 
-	jabarData := &models.JabarData{
-		Cities: cities,
-	}
+	// jabarData := &models.JabarData{
+	// 	Cities: cities,
+	// }
 
-	fmt.Println(jabarData)
+	// fmt.Println(jabarData)
 }

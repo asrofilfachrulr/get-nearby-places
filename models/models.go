@@ -2,7 +2,7 @@ package models
 
 type (
 	VillageRequest struct {
-		Nama      string `json:"kemendagri_kelurahan_nama" validate:"required"`
+		Name      string `json:"kemendagri_kelurahan_nama" validate:"required"`
 		Level     string
 		Code      string  `json:"kemendagri_kelurahan_kode" validate:"required"`
 		Latitude  float64 `json:"latitude" validate:"required"`
@@ -10,7 +10,7 @@ type (
 	}
 
 	DistrictRequest struct {
-		Nama      string `json:"kemendagri_kecamatan_nama" validate:"required"`
+		Name      string `json:"kemendagri_kecamatan_nama" validate:"required"`
 		Level     string
 		Code      string  `json:"kemendagri_kecamatan_kode" validate:"required"`
 		Latitude  float64 `json:"latitude" validate:"required"`
@@ -18,7 +18,7 @@ type (
 	}
 
 	CityRequest struct {
-		Nama      string `json:"kemendagri_kota_nama" validate:"required"`
+		Name      string `json:"kemendagri_kota_nama" validate:"required"`
 		Level     string
 		Code      float64 `json:"kemendagri_kota_kode" validate:"required"`
 		Latitude  float64 `json:"latitude" validate:"required"`
