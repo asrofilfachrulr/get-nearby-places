@@ -36,36 +36,3 @@ type (
 		Data []CityRequest `json:"data" validate:"required"`
 	}
 )
-
-type (
-	Location struct {
-		Latitude  float64
-		Longitude float64
-	}
-	CoreInfo struct {
-		Location Location
-		Level    string
-		Name     string
-		Code     string
-	}
-)
-
-type (
-	Village struct {
-		CoreInfo CoreInfo
-	}
-	District struct {
-		CoreInfo CoreInfo
-		Villages []Village
-	}
-	City struct {
-		CoreInfo  CoreInfo
-		Districts []District
-	}
-	JabarData struct {
-		Cities    []City
-		NCity     uint
-		NDistrict uint
-		NVillage  uint
-	}
-)

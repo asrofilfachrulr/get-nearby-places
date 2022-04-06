@@ -1,9 +1,10 @@
 module github.com/asrofilfachrulr/get-nearby-places
 
 // +heroku goVersion go1.17
-go 1.17
+go 1.18
 
 require (
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2
 	github.com/swaggo/gin-swagger v1.4.1
 	github.com/swaggo/swag v1.8.1
