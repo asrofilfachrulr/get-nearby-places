@@ -10,6 +10,7 @@ import (
 	"golang.org/x/text/language"
 )
 
+// Struct for response [GET] /search
 type Place struct {
 	ID           uint8   `json:"id"` // refers to building ownership in region
 	CityName     string  `json:"city_name"`
@@ -21,11 +22,29 @@ type Place struct {
 	Latitude     float64 `json:"latitude"`
 }
 
+// Struct for request [GET] /search
 type WebQuery struct {
 	Latitude   float64
 	Longitude  float64
 	CategoryId uint8
 }
+
+/*
+*	Assumptions about distribute random places:
+*	- Due unknown border locations, assume below constants
+*	  are a safe radius for distributing random places which
+*	  those places are still belong to such region we referred to,
+*	  Eventhough in real life, the provided location isn't centralized
+*	  against the shape as overall and has various distance to its border
+*	  Also some places discovered (not did much reasearch) have really short
+*	  distance to its border from its provided location (< 1km)
+ */
+const (
+	// in meter
+	RADIUS_DISTRIBUTION_CITY     float64 = 5000
+	RADIUS_DISTRIBUTION_DISTRICT float64 = 3000
+	RADIUS_DISTRIBUTION_VILLAGE  float64 = 1500
+)
 
 func GeneratePlaces(data BatchData) []Place {
 	batchPlaces := []Place{}
@@ -38,7 +57,7 @@ func GeneratePlaces(data BatchData) []Place {
 			placeId := 1
 			for c := 0; c < int(category.Count); c++ {
 
-				l := RandShiftLoc(data.Cities[i].CoreInfo.Location, float64(rand.Intn(5000)))
+				l := RandShiftLoc(data.Cities[i].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_CITY)
 
 				regionName := caser.String(data.Cities[i].CoreInfo.Name)
 
@@ -63,7 +82,7 @@ func GeneratePlaces(data BatchData) []Place {
 			for _, category := range MapCategories["district"] {
 				placeId := 1
 				for z := 0; z < int(category.Count); z++ {
-					l := RandShiftLoc(data.Cities[i].CoreInfo.Location, float64(rand.Intn(3000)))
+					l := RandShiftLoc(data.Cities[i].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_DISTRICT)
 
 					batchPlaces = append(batchPlaces, Place{
 						ID:           uint8(buildingId),
@@ -84,7 +103,7 @@ func GeneratePlaces(data BatchData) []Place {
 				for _, category := range MapCategories["village"] {
 					placeId := 1
 					for z := 0; z < int(category.Count); z++ {
-						l := RandShiftLoc(data.Cities[i].CoreInfo.Location, float64(rand.Intn(1500)))
+						l := RandShiftLoc(data.Cities[i].Districts[j].Villages[k].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_VILLAGE)
 
 						districtName := fmt.Sprintf("%s %s", "Kecamatan", caser.String(data.Cities[i].Districts[j].CoreInfo.Name))
 
