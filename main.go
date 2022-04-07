@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
+	// API Call and load them to predefined structs in models dir
 	batchData := m.LoadAll()
+
+	// Generate random places from given data
 	batchPlaces := m.GeneratePlaces(batchData)
 
 	// for i := 0; i < len(batchPlaces)/10; i++ {
@@ -19,5 +22,5 @@ func main() {
 
 	r := router.SetupRouter(batchPlaces)
 
-	log.Fatalln(r.Run())
+	log.Fatalln(r.Run(":8000"))
 }
