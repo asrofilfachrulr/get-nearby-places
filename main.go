@@ -1,20 +1,23 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+	"log"
 
 	m "github.com/asrofilfachrulr/get-nearby-places/models"
+	"github.com/asrofilfachrulr/get-nearby-places/router"
 )
 
 func main() {
 	batchData := m.LoadAll()
 	batchPlaces := m.GeneratePlaces(batchData)
 
-	for _, v := range [...]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9} {
-		b, _ := json.MarshalIndent(batchPlaces[v], "", " ")
-		fmt.Printf("b: %v\n", string(b))
+	// for i := 0; i < len(batchPlaces)/10; i++ {
+	// 	b, _ := json.MarshalIndent(batchPlaces[i], "", " ")
+	// 	fmt.Println(string(b))
 
-	}
+	// }
 
+	r := router.SetupRouter(batchPlaces)
+
+	log.Fatalln(r.Run())
 }
