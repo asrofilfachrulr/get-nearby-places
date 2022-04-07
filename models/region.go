@@ -87,14 +87,16 @@ func LoadAll() BatchData {
 			continue
 		}
 		codeString := strings.Split(v.Data[i].Code, ".")
+
 		districtCode := fmt.Sprintf("%s.%s.%s", codeString[0], codeString[1], codeString[2])
+
 		village := Village{
 			CoreInfo: CoreInfo{
 				Location: Location{
 					Latitude:  v.Data[i].Latitude,
 					Longitude: v.Data[i].Longitude,
 				},
-				Name:  v.Data[i].Name,
+				Name:  strings.Join([]string{"KELURAHAN", v.Data[i].Name}, " "),
 				Level: "KELURAHAN",
 				Code:  v.Data[i].Code,
 			},
@@ -147,18 +149,38 @@ func LoadAll() BatchData {
 			continue
 		}
 		cityCode := fmt.Sprintf("%.2f", c.Data[i].Code)
+
+		cityLevel := strings.Split(c.Data[0].Name, " ")[0]
+
+		if cityLevel == "KAB." {
+			cityLevel = "KABUPATEN"
+			vilLevel := "DESA"
+
+			districts := cityDistrictMap[cityCode]
+
+			for i := 0; i < len(districts); i++ {
+				for j := 0; j < len(districts[i].Villages); j++ {
+					districts[i].Villages[j].CoreInfo.Level = vilLevel
+					districts[i].Villages[j].CoreInfo.Name = strings.Replace(districts[i].Villages[j].CoreInfo.Name, "KELURAHAN", vilLevel, 1)
+				}
+			}
+		}
+
+		cityName := strings.Replace(c.Data[i].Name, "KAB.", "KABUPATEN", 1)
+
 		cities = append(cities, City{
 			CoreInfo: CoreInfo{
 				Location: Location{
 					Longitude: c.Data[i].Longitude,
 					Latitude:  c.Data[i].Latitude,
 				},
-				Level: "KOTA",
-				Name:  c.Data[i].Name,
+				Level: cityLevel,
+				Name:  cityName,
 				Code:  cityCode,
 			},
 			Districts: cityDistrictMap[cityCode],
 		})
+
 	}
 
 	return BatchData{

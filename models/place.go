@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+
+	"github.com/umahmood/haversine"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type Place struct {
@@ -17,10 +21,15 @@ type Place struct {
 	Latitude     float64 `json:"latitude"`
 }
 
-var directions = []Direction{North, South, West, East}
+type WebQuery struct {
+	Latitude   float64
+	Longitude  float64
+	CategoryId uint8
+}
 
 func GeneratePlaces(data BatchData) []Place {
 	batchPlaces := []Place{}
+	caser := cases.Title(language.Indonesian)
 
 	for i := 0; i < len(data.Cities); i++ {
 
@@ -29,15 +38,19 @@ func GeneratePlaces(data BatchData) []Place {
 			placeId := 1
 			for c := 0; c < int(category.Count); c++ {
 
-				l, _ := ShiftLocation(data.Cities[i].CoreInfo.Location, float64(rand.Intn(5000)), directions[rand.Intn(4)])
+				l := RandShiftLoc(data.Cities[i].CoreInfo.Location, float64(rand.Intn(5000)))
+
+				regionName := caser.String(data.Cities[i].CoreInfo.Name)
+
+				placeName := fmt.Sprintf("%s %s %d", category.Name, caser.String(regionName), placeId)
 
 				batchPlaces = append(batchPlaces, Place{
 					ID:         uint8(buildingId),
-					CityName:   strings.Title(strings.ToLower(data.Cities[i].CoreInfo.Name)),
+					CityName:   caser.String(data.Cities[i].CoreInfo.Name),
 					CategoryID: category.ID,
 					Longitude:  l.Longitude,
 					Latitude:   l.Latitude,
-					Name:       fmt.Sprintf("%s %s %d", category.Name, strings.Title(strings.ToLower(data.Cities[i].CoreInfo.Name)), placeId),
+					Name:       placeName,
 				})
 
 				placeId += 1
@@ -50,16 +63,16 @@ func GeneratePlaces(data BatchData) []Place {
 			for _, category := range MapCategories["district"] {
 				placeId := 1
 				for z := 0; z < int(category.Count); z++ {
-					l, _ := ShiftLocation(data.Cities[i].CoreInfo.Location, float64(rand.Intn(5000)), directions[rand.Intn(4)])
+					l := RandShiftLoc(data.Cities[i].CoreInfo.Location, float64(rand.Intn(3000)))
 
 					batchPlaces = append(batchPlaces, Place{
 						ID:           uint8(buildingId),
-						CityName:     strings.Title(strings.ToLower(data.Cities[i].CoreInfo.Name)),
-						DistrictName: "Kecamatan " + strings.Title(strings.ToLower(data.Cities[i].Districts[j].CoreInfo.Name)),
+						CityName:     caser.String(data.Cities[i].CoreInfo.Name),
+						DistrictName: "Kecamatan " + caser.String(data.Cities[i].Districts[j].CoreInfo.Name),
 						CategoryID:   category.ID,
 						Longitude:    l.Longitude,
 						Latitude:     l.Latitude,
-						Name:         fmt.Sprintf("%s %s %d", category.Name, strings.Title(strings.ToLower(data.Cities[i].Districts[j].CoreInfo.Name)), placeId),
+						Name:         fmt.Sprintf("%s %s %d", category.Name, caser.String(data.Cities[i].Districts[j].CoreInfo.Name), placeId),
 					})
 					placeId += 1
 					buildingId += 1
@@ -71,18 +84,27 @@ func GeneratePlaces(data BatchData) []Place {
 				for _, category := range MapCategories["village"] {
 					placeId := 1
 					for z := 0; z < int(category.Count); z++ {
+						l := RandShiftLoc(data.Cities[i].CoreInfo.Location, float64(rand.Intn(1500)))
 
-						l, _ := ShiftLocation(data.Cities[i].CoreInfo.Location, float64(rand.Intn(5000)), directions[rand.Intn(4)])
+						districtName := fmt.Sprintf("%s %s", "Kecamatan", caser.String(data.Cities[i].Districts[j].CoreInfo.Name))
+
+						regionName := data.Cities[i].Districts[j].Villages[k].CoreInfo.Name
+						vilName := caser.String(regionName)
+
+						if category.ID != 3 {
+							regionName = strings.Replace(regionName, data.Cities[i].Districts[j].Villages[k].CoreInfo.Level+" ", "", 1)
+						}
+						placeName := fmt.Sprintf("%s %s %d", category.Name, caser.String(regionName), placeId)
 
 						batchPlaces = append(batchPlaces, Place{
 							ID:           uint8(buildingId),
-							CityName:     strings.Title(strings.ToLower(data.Cities[i].CoreInfo.Name)),
-							DistrictName: "Kecamatan " + strings.Title(strings.ToLower(data.Cities[i].Districts[j].CoreInfo.Name)),
-							VillageName:  strings.Title(strings.ToLower(data.Cities[i].Districts[j].Villages[k].CoreInfo.Name)),
+							CityName:     caser.String(data.Cities[i].CoreInfo.Name),
+							DistrictName: districtName,
+							VillageName:  vilName,
 							CategoryID:   category.ID,
 							Longitude:    l.Longitude,
 							Latitude:     l.Latitude,
-							Name:         fmt.Sprintf("%s %s %d", category.Name, strings.Title(strings.ToLower(data.Cities[i].Districts[j].Villages[k].CoreInfo.Name)), placeId),
+							Name:         placeName,
 						})
 						placeId += 1
 						buildingId += 1
@@ -93,4 +115,29 @@ func GeneratePlaces(data BatchData) []Place {
 	}
 
 	return batchPlaces
+}
+
+func GetNearbyPlaces(q WebQuery, BatchPlaces []Place) ([]Place, error) {
+	places := []Place{}
+
+	pinned := haversine.Coord{Lat: q.Latitude, Lon: q.Longitude}
+
+	for _, place := range BatchPlaces {
+		_, distKm := haversine.Distance(pinned, haversine.Coord{
+			Lat: place.Latitude,
+			Lon: place.Longitude,
+		})
+
+		if distKm <= 5 {
+			if q.CategoryId != 0 {
+				if place.CategoryID == q.CategoryId {
+					places = append(places, place)
+				}
+			} else {
+				places = append(places, place)
+			}
+		}
+	}
+
+	return places, nil
 }
