@@ -52,6 +52,8 @@ type (
 
 var validate = validator.New()
 
+// If key exists, append to value which is a slice
+// If doesn't extist, initialize the new one
 func MapAppend[R Regionable](dataMap *map[string][]R, k string, data R) {
 	if _, ok := (*dataMap)[k]; !ok {
 		(*dataMap)[k] = []R{data}
@@ -60,6 +62,7 @@ func MapAppend[R Regionable](dataMap *map[string][]R, k string, data R) {
 	}
 }
 
+// Request to the given URL and unmarshalling to data which R type.
 func RequestThenUnmarshall[R Unmarshallable](url string, data *R) error {
 	resp, _ := http.Get(url)
 
@@ -72,23 +75,30 @@ func RequestThenUnmarshall[R Unmarshallable](url string, data *R) error {
 	return json.Unmarshal(body, data)
 }
 
+// Load all data and seed to defined structs
 func LoadAll() BatchData {
-	// village
+	//---------------village data---------------//
 	var v DataVillageReq
 
 	if err := RequestThenUnmarshall(VILLAGE_URL, &v); err != nil {
 		log.Fatalln(err)
 	}
 
+	// relation between district and its villages, mapped by district code
 	districtVillageMap := map[string][]Village{}
 
 	for i := 0; i < len(v.Data); i++ {
 		if err := validate.Struct(&v.Data[i]); err != nil {
 			continue
 		}
+
+		// split village code
 		codeString := strings.Split(v.Data[i].Code, ".")
 
 		districtCode := fmt.Sprintf("%s.%s.%s", codeString[0], codeString[1], codeString[2])
+
+		// level name default, used also as prefix to name a region. Will be changed in the future if its top level its KOTA instead KABUPATEN
+		level := "KELURAHAN"
 
 		village := Village{
 			CoreInfo: CoreInfo{
@@ -96,29 +106,37 @@ func LoadAll() BatchData {
 					Latitude:  v.Data[i].Latitude,
 					Longitude: v.Data[i].Longitude,
 				},
-				Name:  strings.Join([]string{"KELURAHAN", v.Data[i].Name}, " "),
-				Level: "KELURAHAN",
+				Name:  strings.Join([]string{level, v.Data[i].Name}, " "),
+				Level: level,
 				Code:  v.Data[i].Code,
 			},
 		}
 		MapAppend(&districtVillageMap, districtCode, village)
 	}
 
-	// district
+	//---------------district data---------------//
 	var d DataDistrictReq
+
 	if err := RequestThenUnmarshall(DISTRICT_URL, &d); err != nil {
 		log.Fatalln(err)
 	}
 
+	// relation between city and all its districts, mapped by city code
 	cityDistrictMap := map[string][]District{}
+
 	for i := 0; i < len(d.Data); i++ {
 		if err := validate.Struct(&d.Data[i]); err != nil {
 			continue
 		}
 
+		// split district code to set city code and district code
 		codeString := strings.Split(d.Data[i].Code, ".")
+
 		cityCode := fmt.Sprintf("%s.%s", codeString[0], codeString[1])
 		districtCode := fmt.Sprintf("%s.%s.%s", codeString[0], codeString[1], codeString[2])
+
+		// level name, true for all data. not used as prefix to name a district
+		level := "KECAMATAN"
 
 		district := District{
 			CoreInfo: CoreInfo{
@@ -126,17 +144,18 @@ func LoadAll() BatchData {
 					Latitude:  d.Data[i].Latitude,
 					Longitude: d.Data[i].Longitude,
 				},
-				Level: "KECAMATAN",
+				Level: level,
 				Name:  d.Data[i].Name,
 				Code:  d.Data[i].Code,
 			},
+			// relate with slice of villages which has same district code
 			Villages: districtVillageMap[districtCode],
 		}
 
 		MapAppend(&cityDistrictMap, cityCode, district)
 	}
 
-	// city
+	//--------------- city data ---------------//
 	var c DataCityReq
 
 	if err := RequestThenUnmarshall(CITY_URL, &c); err != nil {
@@ -144,20 +163,31 @@ func LoadAll() BatchData {
 	}
 
 	cities := []City{}
+
 	for i := 0; i < len(c.Data); i++ {
 		if err := validate.Struct(&c.Data[i]); err != nil {
 			continue
 		}
+
+		// due city code from API has float (uniquely against other codes), format to string to data uniformity
 		cityCode := fmt.Sprintf("%.2f", c.Data[i].Code)
 
+		// get city level name from its name
 		cityLevel := strings.Split(c.Data[i].Name, " ")[0]
 
+		// assuming DESA its lowest level for KAB. / KABUPATEN, and KELURAHAN is lowest level for KOTA..
 		if cityLevel == "KAB." {
+			// remove the abbreviation for city level
 			cityLevel = "KABUPATEN"
+
+			// level name for KABUPATEN
 			vilLevel := "DESA"
 
+			// get all districts for current KAPUBATEN by the city code
 			districts := cityDistrictMap[cityCode]
 
+			// iterate through all districts and villages to change default level to DESA
+			// and add change prefix at village name to DESA instead KELURAHAN
 			for i := 0; i < len(districts); i++ {
 				for j := 0; j < len(districts[i].Villages); j++ {
 					districts[i].Villages[j].CoreInfo.Level = vilLevel
@@ -166,6 +196,7 @@ func LoadAll() BatchData {
 			}
 		}
 
+		// remove the abbreviation for city name
 		cityName := strings.Replace(c.Data[i].Name, "KAB.", "KABUPATEN", 1)
 
 		cities = append(cities, City{
@@ -178,11 +209,13 @@ func LoadAll() BatchData {
 				Name:  cityName,
 				Code:  cityCode,
 			},
+			// relate with slice of districts which has same city code
 			Districts: cityDistrictMap[cityCode],
 		})
 
 	}
 
+	// insert city to super struct
 	return BatchData{
 		Cities: cities,
 	}
