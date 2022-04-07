@@ -150,7 +150,7 @@ func LoadAll() BatchData {
 		}
 		cityCode := fmt.Sprintf("%.2f", c.Data[i].Code)
 
-		cityLevel := strings.Split(c.Data[0].Name, " ")[0]
+		cityLevel := strings.Split(c.Data[i].Name, " ")[0]
 
 		if cityLevel == "KAB." {
 			cityLevel = "KABUPATEN"
