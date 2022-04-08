@@ -93,12 +93,15 @@ func LoadAll() BatchData {
 		}
 
 		// split village code
-		codeString := strings.Split(v.Data[i].Code, ".")
+		codeSegments := strings.Split(v.Data[i].Code, ".")
 
-		districtCode := fmt.Sprintf("%s.%s.%s", codeString[0], codeString[1], codeString[2])
+		districtCode := fmt.Sprintf("%s.%s.%s", codeSegments[0], codeSegments[1], codeSegments[2])
 
-		// level name default, used also as prefix to name a region. Will be changed in the future if its top level its KOTA instead KABUPATEN
+		// level name determined by the begin number of the code last segment. [1] for KELURAHAN and [2] for DESA
 		level := "KELURAHAN"
+		if string(codeSegments[3][0]) == "2" {
+			level = "DESA"
+		}
 
 		village := Village{
 			CoreInfo: CoreInfo{
@@ -130,10 +133,10 @@ func LoadAll() BatchData {
 		}
 
 		// split district code to set city code and district code
-		codeString := strings.Split(d.Data[i].Code, ".")
+		codeSegments := strings.Split(d.Data[i].Code, ".")
 
-		cityCode := fmt.Sprintf("%s.%s", codeString[0], codeString[1])
-		districtCode := fmt.Sprintf("%s.%s.%s", codeString[0], codeString[1], codeString[2])
+		cityCode := fmt.Sprintf("%s.%s", codeSegments[0], codeSegments[1])
+		districtCode := fmt.Sprintf("%s.%s.%s", codeSegments[0], codeSegments[1], codeSegments[2])
 
 		// level name, true for all data. not used as prefix to name a district
 		level := "KECAMATAN"
@@ -175,25 +178,9 @@ func LoadAll() BatchData {
 		// get city level name from its name
 		cityLevel := strings.Split(c.Data[i].Name, " ")[0]
 
-		// assuming DESA its lowest level for KAB. / KABUPATEN, and KELURAHAN is lowest level for KOTA..
 		if cityLevel == "KAB." {
 			// remove the abbreviation for city level
 			cityLevel = "KABUPATEN"
-
-			// level name for KABUPATEN
-			vilLevel := "DESA"
-
-			// get all districts for current KAPUBATEN by the city code
-			districts := cityDistrictMap[cityCode]
-
-			// iterate through all districts and villages to change default level to DESA
-			// and add change prefix at village name to DESA instead KELURAHAN
-			for i := 0; i < len(districts); i++ {
-				for j := 0; j < len(districts[i].Villages); j++ {
-					districts[i].Villages[j].CoreInfo.Level = vilLevel
-					districts[i].Villages[j].CoreInfo.Name = strings.Replace(districts[i].Villages[j].CoreInfo.Name, "KELURAHAN", vilLevel, 1)
-				}
-			}
 		}
 
 		// remove the abbreviation for city name
