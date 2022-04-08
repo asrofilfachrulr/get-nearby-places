@@ -1,6 +1,8 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/asrofilfachrulr/get-nearby-places/controller"
 	"github.com/asrofilfachrulr/get-nearby-places/models"
 	"github.com/gin-gonic/gin"
@@ -19,7 +21,7 @@ func SetupRouter(data models.BatchPlace) *gin.Engine {
 	})
 
 	r.GET("/", func(ctx *gin.Context) {
-		ctx.Redirect(200, "/swagger/index.html")
+		ctx.Redirect(http.StatusPermanentRedirect, "/swagger/index.html")
 	})
 
 	r.GET("/search", controller.GetNearby)
