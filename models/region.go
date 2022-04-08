@@ -54,9 +54,11 @@ type (
 
 var validate = validator.New()
 
-// The code using golang feature: generic. Please use minimum golang version 1.18
+// The code using golang feature: generic.
+// sPlease use minimum golang version 1.18
 
-// Using generic, check if key exists of a region structs, append to value which is a slice
+// Using generic, check if key exists of a region structs,
+// append to value which is a slice
 // If doesn't extist, initialize the new one
 func MapAppend[R Regionable](dataMap *map[string][]R, k string, data R) {
 	if _, ok := (*dataMap)[k]; !ok {
@@ -101,7 +103,8 @@ func LoadAll() BatchData {
 
 		districtCode := fmt.Sprintf("%s.%s.%s", codeSegments[0], codeSegments[1], codeSegments[2])
 
-		// level name determined by the begin number of the code last segment. [1] for KELURAHAN and [2] for DESA
+		// level name determined by the begin number of the code last segment.
+		// [1] for KELURAHAN and [2] for DESA
 		level := "KELURAHAN"
 		if string(codeSegments[3][0]) == "2" {
 			level = "DESA"
@@ -142,7 +145,8 @@ func LoadAll() BatchData {
 		cityCode := fmt.Sprintf("%s.%s", codeSegments[0], codeSegments[1])
 		districtCode := fmt.Sprintf("%s.%s.%s", codeSegments[0], codeSegments[1], codeSegments[2])
 
-		// level name, true for all data. not used as prefix to name a district
+		// level name, true for all data.
+		// not used as prefix to name a district
 		level := "KECAMATAN"
 
 		district := District{
@@ -176,7 +180,8 @@ func LoadAll() BatchData {
 			continue
 		}
 
-		// due city code from API has float type (uniquely against other codes), format to string to achieve data uniformity
+		// due city code from API has float type (uniquely against other codes),
+		// format to string to achieve data uniformity
 		cityCode := fmt.Sprintf("%.2f", c.Data[i].Code)
 
 		// get city level name from its name

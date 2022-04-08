@@ -10,13 +10,15 @@ type DirectionH int
 
 // simplified direction for location shiftting
 
-// vertical shift toward DirectionV constants (south or north) means latitude increased or decreased but longitude remains the same
+// vertical shift toward DirectionV constants (south or north) means
+// latitude increased or decreased but longitude remains the same
 const (
 	North DirectionV = iota
 	South
 )
 
-// horizontal shift toward DirectionH constants (east or west) means longitude increased or decreased but latitude remains the same
+// horizontal shift toward DirectionH constants (east or west) means
+// longitude increased or decreased but latitude remains the same
 const (
 	East DirectionH = iota
 	West

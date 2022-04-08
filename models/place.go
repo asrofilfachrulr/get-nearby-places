@@ -47,7 +47,8 @@ const (
 	RADIUS_DISTRIBUTION_VILLAGE  float64 = 1500
 )
 
-// for faster used algorithm (linear search), clustering places to theirs upper region level location
+// for faster used algorithm (linear search),
+// clustering places to theirs upper region level
 // (village and district embed to their city)
 
 type (
@@ -65,7 +66,9 @@ func GeneratePlaces(data BatchData) BatchPlace {
 	// for formatting region name
 	caser := cases.Title(language.Indonesian)
 
-	// per item in slice contains of all places in a city with location of the city inserted to grouping them and ease for search nearby in future. Further info look GetNearbyPlaces function at line 227
+	// per item in slice contains of all places in a city with location of the city inserted to
+	// grouping them and ease for search nearby in future.
+	// Further info look GetNearbyPlaces function at line 227
 	cplaces := []CityPlace{}
 
 	// iterate per city
@@ -92,8 +95,12 @@ func GeneratePlaces(data BatchData) BatchPlace {
 
 			// generating by category place count
 			for c := 0; c < int(category.Count); c++ {
-				// creating new location around the "city location" by shifting diagonally randomly in such range that has been declared in constants on line 45-47
-				l := RandShiftLoc(data.Cities[i].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_CITY)
+				// creating new location around the "city location" by shifting
+				// diagonally randomly in such range that has been declared in constants on line 45-47
+				l := RandShiftLoc(
+					data.Cities[i].CoreInfo.Location,
+					rand.Float64()*RADIUS_DISTRIBUTION_CITY,
+				)
 
 				// region name with title case format
 				regionName := caser.String(data.Cities[i].CoreInfo.Name)
@@ -131,8 +138,12 @@ func GeneratePlaces(data BatchData) BatchPlace {
 
 				// generating by category place count
 				for z := 0; z < int(category.Count); z++ {
-					// creating new location around the "district location" by shifting diagonally randomly in such range that has been declared in constants on line 45-47
-					l := RandShiftLoc(data.Cities[i].Districts[j].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_DISTRICT)
+					// creating new location around the "district location" by shifting
+					// diagonally randomly in such range that has been declared in constants on line 45-47
+					l := RandShiftLoc(
+						data.Cities[i].Districts[j].CoreInfo.Location,
+						rand.Float64()*RADIUS_DISTRIBUTION_DISTRICT,
+					)
 
 					// name of regions and generated place
 					prefix := "Kecamatan "
@@ -171,13 +182,19 @@ func GeneratePlaces(data BatchData) BatchPlace {
 
 					// generating by category place count
 					for z := 0; z < int(category.Count); z++ {
-						// creating new location around the "village location" by shifting diagonally randomly in such range that has been declared in constants on line 45-47
-						l := RandShiftLoc(data.Cities[i].Districts[j].Villages[k].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_VILLAGE)
+						// creating new location around the "village location" by shifting
+						// diagonally randomly in such range that has been declared in constants on line 45-47
+						l := RandShiftLoc(
+							data.Cities[i].Districts[j].Villages[k].CoreInfo.Location,
+							rand.Float64()*RADIUS_DISTRIBUTION_VILLAGE,
+						)
 
 						// name of regions and generated place
 						cityName := caser.String(data.Cities[i].CoreInfo.Name)
 
-						districtName := fmt.Sprintf("%s %s", "Kecamatan", caser.String(data.Cities[i].Districts[j].CoreInfo.Name))
+						districtName := fmt.Sprintf("%s %s", "Kecamatan",
+							caser.String(data.Cities[i].Districts[j].CoreInfo.Name),
+						)
 
 						vilName := data.Cities[i].Districts[j].Villages[k].CoreInfo.Name
 
@@ -258,7 +275,8 @@ func GetNearbyPlaces(q WebQuery, bp BatchPlace) ([]Place, error) {
 				Dist:      distKm,
 			})
 
-			// set for future fast compare current distance against the max distance has been registered
+			// set for future fast compare current distance against
+			// the max distance has been registered
 			if max != 0.0 {
 				if distKm > max {
 					max = distKm
@@ -268,7 +286,8 @@ func GetNearbyPlaces(q WebQuery, bp BatchPlace) ([]Place, error) {
 				max = distKm
 			}
 		} else {
-			// find the max dist registered , if the current city closer, the one in slice will be replaced
+			// find the max dist registered , if the current city closer,
+			// the one in slice will be replaced
 			if distKm < max {
 				closestCities[maxIndex] = CpDistance{
 					CityPlace: cplace,
