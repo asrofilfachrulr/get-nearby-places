@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"strings"
 
@@ -55,6 +56,7 @@ type (
 	}
 	CityPlace struct {
 		Location Location
+		Name     string
 		Places   []Place // all places
 	}
 )
@@ -72,6 +74,7 @@ func GeneratePlaces(data BatchData) BatchPlace {
 				Latitude:  data.Cities[i].CoreInfo.Location.Latitude,
 				Longitude: data.Cities[i].CoreInfo.Location.Longitude,
 			},
+			Name: data.Cities[i].CoreInfo.Name,
 		}
 		places := []Place{}
 
@@ -207,7 +210,7 @@ func GetNearbyPlaces(q WebQuery, bp BatchPlace) ([]Place, error) {
 		})
 
 		// directly append if slice isnt full yet
-		if len(closestCities) <= 5 {
+		if len(closestCities) < 5 {
 			closestCities = append(closestCities, CpDistance{
 				CityPlace: cplace,
 				Dist:      distKm,
@@ -219,6 +222,8 @@ func GetNearbyPlaces(q WebQuery, bp BatchPlace) ([]Place, error) {
 					max = distKm
 					maxIndex = len(closestCities) - 1
 				}
+			} else {
+				max = distKm
 			}
 		} else {
 			// find the max dist registered , if the current city closer, the one in slice will be replaced
@@ -244,8 +249,10 @@ func GetNearbyPlaces(q WebQuery, bp BatchPlace) ([]Place, error) {
 		}
 	}
 
+	log.Println("5 closest cities/regeencies to given location:")
 	// scan all places only in 5 closest cities
 	for _, city := range closestCities {
+		fmt.Println(city.CityPlace.Name)
 		for _, place := range city.CityPlace.Places {
 			_, distKm := haversine.Distance(pinned, haversine.Coord{
 				Lat: place.Latitude,
@@ -262,6 +269,7 @@ func GetNearbyPlaces(q WebQuery, bp BatchPlace) ([]Place, error) {
 			}
 		}
 	}
+	fmt.Println()
 
 	return places, nil
 }
