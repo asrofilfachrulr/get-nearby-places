@@ -1,0 +1,1 @@
+web: bin/github.com/asrofilfachrulr/get-nearby-places
