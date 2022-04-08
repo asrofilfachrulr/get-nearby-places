@@ -13,15 +13,14 @@ Kelas: Backend Golang
 Web service (API) untuk melakukan pencarian daftar tempat/place terdekat. Tempat/place digenerate secara random, memiliki atribut dan constraint yang melekat pada region (kota/kabupaten/desa/keluarahan/kecamatan) yang ditempatinya. API akan mengembalikan semua tempat terdekat dalam radius 5 km dari sebuah titik koordinat latitude dan longitude yang diberikan.
 
 
-### NOTE   
+## NOTE   
 
 Kode menggunakan fitur generic yang ada pada golang versi 1.18. Selengkapnya tentang generic: 
 
 [Release Note Go 1.18](https://tip.golang.org/doc/go1.18#generics)   
 
 
-### Disclamier  
-
+## Disclamier  
 
 Tidak diizinkan menyalin/mengutip kode penuh/sebagian untuk apapun tugas JCC next batch atau batch saat ini (2) di kelas apapun.  
 Boleh digunakan hanya untuk referensi ide.
