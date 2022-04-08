@@ -8,7 +8,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetupRouter(data []models.Place) *gin.Engine {
+func SetupRouter(data models.BatchPlace) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(func(ctx *gin.Context) {
