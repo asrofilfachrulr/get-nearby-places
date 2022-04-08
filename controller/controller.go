@@ -9,7 +9,7 @@ import (
 )
 
 func GetNearby(ctx *gin.Context) {
-	places := ctx.MustGet("places").([]models.Place)
+	bplace := ctx.MustGet("places").(models.BatchPlace)
 
 	lat, _ := strconv.ParseFloat(ctx.Query("latitude"), 64)
 	lon, _ := strconv.ParseFloat(ctx.Query("longitude"), 64)
@@ -21,7 +21,7 @@ func GetNearby(ctx *gin.Context) {
 		CategoryId: uint8(cid),
 	}
 
-	result, _ := models.GetNearbyPlaces(q, places)
+	result, _ := models.GetNearbyPlaces(q, bplace)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"data":  result,
