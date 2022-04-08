@@ -9,8 +9,8 @@ Kelas: Backend Golang
 
 ### Link  
 
-[Link API di Heroku (swagger)](#)   
-[Link Demo API](#)
+[Link API di Heroku (swagger)](https://github.com/asrofilfachrulr/get-nearby-places)   
+[Link Demo API](https://youtu.be/-zilA1NbZS8)
 
 ## Deskripsi API
 Web service (API) untuk melakukan pencarian daftar tempat/place terdekat. Tempat/place digenerate secara random, memiliki atribut dan constraint yang melekat pada region (kota/kabupaten/desa/keluarahan/kecamatan) yang ditempatinya. API akan mengembalikan semua tempat terdekat dalam radius 5 km dari sebuah titik koordinat latitude dan longitude yang diberikan.
