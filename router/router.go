@@ -10,9 +10,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// const SWAGGER_URL_REMOTE = "https://gist.githubusercontent.com/yohang88/2efb1f26f452d059643fb7ea00c15a10/raw/3b775398f0365d85ea6eb200f8f192091f1fdef1/jcc-openapi-spec.yaml"
+const SWAGGER_URL_REMOTE = "https://gist.githubusercontent.com/asrofilfachrulr/1c8d2a3bf151678c8e01071facb553ed/raw/b83a0ffb2efe0aa6ab085759baeea5784e6fd650/get-nearby-places.yaml"
 
-const SWAGGER_LOCAL = "./swagger-config.yaml"
+// const SWAGGER_LOCAL = "./swagger-config.yaml"
 
 func SetupRouter(data models.BatchPlace) *gin.Engine {
 	r := gin.Default()
@@ -29,7 +29,7 @@ func SetupRouter(data models.BatchPlace) *gin.Engine {
 	r.GET("/search", controller.GetNearby)
 
 	// load swagger from remote url
-	conf := ginSwagger.URL(SWAGGER_LOCAL)
+	conf := ginSwagger.URL(SWAGGER_URL_REMOTE)
 
 	// swagger route
 	r.GET("/swagger/*any", ginSwagger.
