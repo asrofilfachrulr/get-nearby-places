@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "19985f6f-1524-4967-afca-aac3bc563759",
+		"name": "Get Nearby Places API JDS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "@Dago, Coblong, Kota Bandung",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/search?latitude=-6.879608&longitude=107.609587",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "-6.879608"
+						},
+						{
+							"key": "longitude",
+							"value": "107.609587"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "@Jaticempaka, Pondok Gede Kota Bekasi",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/search?latitude=-6.255486&longitude=106.920660",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "-6.255486"
+						},
+						{
+							"key": "longitude",
+							"value": "106.920660"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "@Panumbangan, Jampang Tengah, Kab. Sukabumi",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/search?latitude=-7.056556&longitude=106.804209",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "-7.056556"
+						},
+						{
+							"key": "longitude",
+							"value": "106.804209"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "@Sindang, Sindang, Kab. Indramayu",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/search?latitude=-6.331997&longitude=108.312746",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "-6.331997"
+						},
+						{
+							"key": "longitude",
+							"value": "108.312746"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "@Karangpintal, Purwaharja, Kota Banjar",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/search?latitude=-7.368098&longitude=108.550905&category_id=9",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "-7.368098"
+						},
+						{
+							"key": "longitude",
+							"value": "108.550905"
+						},
+						{
+							"key": "category_id",
+							"value": "9"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
