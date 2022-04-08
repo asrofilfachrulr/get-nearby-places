@@ -10,7 +10,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-const SWAGGER_URL_REMOTE = "https://gist.githubusercontent.com/asrofilfachrulr/1c8d2a3bf151678c8e01071facb553ed/raw/b83a0ffb2efe0aa6ab085759baeea5784e6fd650/get-nearby-places.yaml"
+const SWAGGER_URL_REMOTE = "https://gist.githubusercontent.com/asrofilfachrulr/1c8d2a3bf151678c8e01071facb553ed/raw/227740ee0b51eb3d3e95b0512840d616aa65bcf5/get-nearby-places.yaml"
 
 // const SWAGGER_LOCAL = "./swagger-config.yaml"
 
