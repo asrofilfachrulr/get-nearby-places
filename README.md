@@ -1,4 +1,4 @@
-# Jabar Coding Camp Pertnership Project Challenge Batch 2
+# Jabar Coding Camp Partnership - Project Challenge Batch 2
 ![Logo JCC](https://github.com/asrofilfachrulr/Final-Project---JCC-Golang-2022/blob/main/logo.png)
 
 ### Informasi Peserta  
