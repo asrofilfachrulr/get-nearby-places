@@ -1,6 +1,6 @@
 module github.com/asrofilfachrulr/get-nearby-places
 
-// +heroku goVersion go1.17
+// +heroku goVersion go1.18
 go 1.18
 
 require (
