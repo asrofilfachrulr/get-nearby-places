@@ -18,6 +18,10 @@ func SetupRouter(data models.BatchPlace) *gin.Engine {
 		ctx.Set("places", data)
 	})
 
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.Redirect(200, "/swagger/index.html")
+	})
+
 	r.GET("/search", controller.GetNearby)
 
 	// load swagger from remote url
