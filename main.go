@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 
 	m "github.com/asrofilfachrulr/get-nearby-places/models"
 	"github.com/asrofilfachrulr/get-nearby-places/router"
@@ -17,7 +16,5 @@ func main() {
 
 	r := router.SetupRouter(bplace)
 
-	PORT := os.Getenv("PORT")
-
-	log.Fatalln(r.Run(PORT))
+	log.Fatalln(r.Run())
 }
