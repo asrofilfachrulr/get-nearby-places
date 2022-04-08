@@ -11,12 +11,14 @@ import (
 func SetupRouter(data models.BatchPlace) *gin.Engine {
 	r := gin.Default()
 
+	// attach BatchPlace to gin Context
 	r.Use(func(ctx *gin.Context) {
 		ctx.Set("places", data)
 	})
 
 	r.GET("/search", controller.GetNearby)
 
+	// load swagger from remote url
 	conf := ginSwagger.URL("https://gist.githubusercontent.com/yohang88/2efb1f26f452d059643fb7ea00c15a10/raw/3b775398f0365d85ea6eb200f8f192091f1fdef1/jcc-openapi-spec.yaml")
 
 	// swagger route

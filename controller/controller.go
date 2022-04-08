@@ -11,6 +11,7 @@ import (
 func GetNearby(ctx *gin.Context) {
 	bplace := ctx.MustGet("places").(models.BatchPlace)
 
+	// error ignored, assuming user input is always valid input
 	lat, _ := strconv.ParseFloat(ctx.Query("latitude"), 64)
 	lon, _ := strconv.ParseFloat(ctx.Query("longitude"), 64)
 	cid, _ := strconv.ParseUint(ctx.Query("category_id"), 10, 8)

@@ -17,6 +17,7 @@ const (
 	CITY_URL     string = "https://satudata.jabarprov.go.id/api-backend/bigdata/diskominfo/od_kode_wilayah_dan_nama_wilayah_kota_kabupaten?limit=27"
 )
 
+// common attributes / structures
 type (
 	Location struct {
 		Latitude  float64
@@ -30,6 +31,7 @@ type (
 	}
 )
 
+// structuring unmarshalled json from API call
 type (
 	Village struct {
 		CoreInfo CoreInfo
@@ -52,7 +54,9 @@ type (
 
 var validate = validator.New()
 
-// If key exists, append to value which is a slice
+// The code using golang feature: generic. Please use minimum golang version 1.18
+
+// Using generic, check if key exists of a region structs, append to value which is a slice
 // If doesn't extist, initialize the new one
 func MapAppend[R Regionable](dataMap *map[string][]R, k string, data R) {
 	if _, ok := (*dataMap)[k]; !ok {
@@ -62,7 +66,7 @@ func MapAppend[R Regionable](dataMap *map[string][]R, k string, data R) {
 	}
 }
 
-// Request to the given URL and unmarshalling to data which R type.
+// Using generic, request to the given URL and unmarshalling to data which R type.
 func RequestThenUnmarshall[R Unmarshallable](url string, data *R) error {
 	resp, _ := http.Get(url)
 
@@ -172,7 +176,7 @@ func LoadAll() BatchData {
 			continue
 		}
 
-		// due city code from API has float (uniquely against other codes), format to string to data uniformity
+		// due city code from API has float type (uniquely against other codes), format to string to achieve data uniformity
 		cityCode := fmt.Sprintf("%.2f", c.Data[i].Code)
 
 		// get city level name from its name
@@ -183,7 +187,7 @@ func LoadAll() BatchData {
 			cityLevel = "KABUPATEN"
 		}
 
-		// remove the abbreviation for city name
+		// remove the abbreviation on city name for city name
 		cityName := strings.Replace(c.Data[i].Name, "KAB.", "KABUPATEN", 1)
 
 		cities = append(cities, City{
@@ -202,7 +206,7 @@ func LoadAll() BatchData {
 
 	}
 
-	// insert city to super struct
+	// insert cities to super struct
 	return BatchData{
 		Cities: cities,
 	}

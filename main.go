@@ -14,12 +14,6 @@ func main() {
 	// Generate random places from given data
 	bplace := m.GeneratePlaces(batchData)
 
-	// for i := 0; i < len(batchPlaces)/10; i++ {
-	// 	b, _ := json.MarshalIndent(batchPlaces[i], "", " ")
-	// 	fmt.Println(string(b))
-
-	// }
-
 	r := router.SetupRouter(bplace)
 
 	log.Fatalln(r.Run(":8000"))

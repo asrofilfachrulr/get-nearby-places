@@ -37,8 +37,8 @@ type WebQuery struct {
 *	  those places are still belong to such region we referred to,
 *	  Eventhough in real life, the provided location isn't centralized
 *	  against the shape as overall and has various distance to its border
-*	  Also some places discovered (not did much reasearch) have really short
-*	  distance to its border from its provided location (< 1km)
+*	  Also some places discovered (not did much reasearches) have really short
+*	  distance to its border from its provided location (about < 1km)
  */
 const (
 	// in meter
@@ -56,19 +56,21 @@ type (
 	}
 	CityPlace struct {
 		Location Location
-		Name     string
-		Places   []Place // all places
+		Name     string  // for debuggin purposes
+		Places   []Place // all places in a city
 	}
 )
 
 func GeneratePlaces(data BatchData) BatchPlace {
-	// bplaces := BatchPlace{}
-
-	// batchPlaces := []Place{}
+	// for formatting region name
 	caser := cases.Title(language.Indonesian)
 
+	// per item in slice contains of all places in a city with location of the city inserted to grouping them and ease for search nearby in future. Further info look GetNearbyPlaces function at line 227
 	cplaces := []CityPlace{}
+
+	// iterate per city
 	for i := 0; i < len(data.Cities); i++ {
+		// initiate CityPlace with current location (name attr for debugging purposes)
 		cp := CityPlace{
 			Location: Location{
 				Latitude:  data.Cities[i].CoreInfo.Location.Latitude,
@@ -76,86 +78,122 @@ func GeneratePlaces(data BatchData) BatchPlace {
 			},
 			Name: data.Cities[i].CoreInfo.Name,
 		}
+
+		// container of all generated place (not caring about level) on a city
 		places := []Place{}
 
+		// id for every place in this city
 		buildingId := 1
-		for _, category := range MapCategories["city"] {
-			placeId := 1
-			for c := 0; c < int(category.Count); c++ {
 
+		// generate places per category due each category has different rule (counts)
+		for _, category := range MapCategories["city"] {
+			// id for place for current category
+			categoryPlaceId := 1
+
+			// generating by category place count
+			for c := 0; c < int(category.Count); c++ {
+				// creating new location around the "city location" by shifting diagonally randomly in such range that has been declared in constants on line 45-47
 				l := RandShiftLoc(data.Cities[i].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_CITY)
 
+				// region name with title case format
 				regionName := caser.String(data.Cities[i].CoreInfo.Name)
 
-				placeName := fmt.Sprintf("%s %s %d", category.Name, caser.String(regionName), placeId)
-
-				// batchPlaces = append(batchPlaces)
+				// the generated place name
+				placeName := fmt.Sprintf("%s %s %d", category.Name, regionName, categoryPlaceId)
 
 				p := Place{
 					ID:         uint8(buildingId),
-					CityName:   caser.String(data.Cities[i].CoreInfo.Name),
+					CityName:   regionName,
 					CategoryID: category.ID,
 					Longitude:  l.Longitude,
 					Latitude:   l.Latitude,
 					Name:       placeName,
 				}
 
-				// batchPlaces = append(batchPlaces, p)
-
+				// append to current city slice of places
 				places = append(places, p)
 
-				placeId += 1
-				buildingId += 1
+				// increment for next generated places
+				categoryPlaceId += 1 // will be reset to 1 in every new category
+				buildingId += 1      // incremented continously as a city's place "counter"
 			}
 		}
 
+		// iterate through all districts on current city
 		for j := 0; j < len(data.Cities[i].Districts); j++ {
-
+			// id for every place in this district
 			buildingId := 1
+
+			// generate places per category due each category has different rule (counts)
 			for _, category := range MapCategories["district"] {
-				placeId := 1
+				// id for place for current category
+				categoryPlaceId := 1
+
+				// generating by category place count
 				for z := 0; z < int(category.Count); z++ {
-					l := RandShiftLoc(data.Cities[i].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_DISTRICT)
+					// creating new location around the "district location" by shifting diagonally randomly in such range that has been declared in constants on line 45-47
+					l := RandShiftLoc(data.Cities[i].Districts[j].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_DISTRICT)
+
+					// name of regions and generated place
+					prefix := "Kecamatan "
+					cityName := caser.String(data.Cities[i].CoreInfo.Name)
+					districtName := caser.String(data.Cities[i].Districts[j].CoreInfo.Name)
+					placeName := fmt.Sprintf("%s %s %d", category.Name, districtName, categoryPlaceId)
 
 					p := Place{
 						ID:           uint8(buildingId),
-						CityName:     caser.String(data.Cities[i].CoreInfo.Name),
-						DistrictName: "Kecamatan " + caser.String(data.Cities[i].Districts[j].CoreInfo.Name),
+						CityName:     cityName,
+						DistrictName: prefix + districtName,
 						CategoryID:   category.ID,
 						Longitude:    l.Longitude,
 						Latitude:     l.Latitude,
-						Name:         fmt.Sprintf("%s %s %d", category.Name, caser.String(data.Cities[i].Districts[j].CoreInfo.Name), placeId),
+						Name:         placeName,
 					}
 
-					// batchPlaces = append(batchPlaces, p)
+					// append to current city slice of places
 					places = append(places, p)
 
-					placeId += 1
-					buildingId += 1
+					// increment for next generated places
+					categoryPlaceId += 1 // will be reset to 1 in every new category
+					buildingId += 1      // incremented continously as district's place "counter"
 				}
 			}
 
+			// iterate through all village in current district in current city
 			for k := 0; k < len(data.Cities[i].Districts[j].Villages); k++ {
-
+				// id for every place in this village
 				buildingId := 1
+
+				// generate places per category due each category has different rule (counts)
 				for _, category := range MapCategories["village"] {
-					placeId := 1
+					// id for place for current category
+					categoryPlaceId := 1
+
+					// generating by category place count
 					for z := 0; z < int(category.Count); z++ {
+						// creating new location around the "village location" by shifting diagonally randomly in such range that has been declared in constants on line 45-47
 						l := RandShiftLoc(data.Cities[i].Districts[j].Villages[k].CoreInfo.Location, rand.Float64()*RADIUS_DISTRIBUTION_VILLAGE)
+
+						// name of regions and generated place
+						cityName := caser.String(data.Cities[i].CoreInfo.Name)
 
 						districtName := fmt.Sprintf("%s %s", "Kecamatan", caser.String(data.Cities[i].Districts[j].CoreInfo.Name))
 
-						regionName := data.Cities[i].Districts[j].Villages[k].CoreInfo.Name
-						vilName := caser.String(regionName)
+						vilName := data.Cities[i].Districts[j].Villages[k].CoreInfo.Name
 
-						if category.ID != 3 {
-							regionName = strings.Replace(regionName, data.Cities[i].Districts[j].Villages[k].CoreInfo.Level+" ", "", 1)
+						vilName = caser.String(vilName)
+
+						placeName := fmt.Sprintf("%s %s %d", category.Name, vilName, categoryPlaceId)
+
+						// SD not begin with level name (SD Cingcin not SD Desa Cingcin)
+						if category.ID == 9 {
+							level := caser.String(data.Cities[i].Districts[j].Villages[k].CoreInfo.Level)
+							placeName = strings.Replace(placeName, level+" ", "", 1)
 						}
-						placeName := fmt.Sprintf("%s %s %d", category.Name, caser.String(regionName), placeId)
 
 						p := Place{
 							ID:           uint8(buildingId),
-							CityName:     caser.String(data.Cities[i].CoreInfo.Name),
+							CityName:     cityName,
 							DistrictName: districtName,
 							VillageName:  vilName,
 							CategoryID:   category.ID,
@@ -164,19 +202,23 @@ func GeneratePlaces(data BatchData) BatchPlace {
 							Name:         placeName,
 						}
 
-						// batchPlaces = append(batchPlaces, p)
+						// append to current city slice of places
 						places = append(places, p)
 
-						placeId += 1
-						buildingId += 1
+						// increment for next generated places
+						categoryPlaceId += 1 // will be reset to 1 in every new category
+						buildingId += 1      // incremented continously as district's place "counter"
 					}
 				}
 			}
 		}
+		// assign all places in this city to Places of city place
 		cp.Places = places
+		// append to slice of city places
 		cplaces = append(cplaces, cp)
 	}
 
+	// assign to super struct
 	bp := BatchPlace{
 		CityPlaces: cplaces,
 	}
@@ -240,6 +282,7 @@ func GetNearbyPlaces(q WebQuery, bp BatchPlace) ([]Place, error) {
 					if maxIndex == i {
 						continue
 					}
+					// set new max
 					if p.Dist > max {
 						maxIndex = i
 						max = p.Dist
@@ -249,16 +292,23 @@ func GetNearbyPlaces(q WebQuery, bp BatchPlace) ([]Place, error) {
 		}
 	}
 
+	// debuggin show five closest cities against given location
 	log.Println("5 closest cities/regeencies to given location:")
 	// scan all places only in 5 closest cities
 	for _, city := range closestCities {
+		// print the city's name
 		fmt.Println(city.CityPlace.Name)
+
+		// iterate through all places in the city
 		for _, place := range city.CityPlace.Places {
 			_, distKm := haversine.Distance(pinned, haversine.Coord{
 				Lat: place.Latitude,
 				Lon: place.Longitude,
 			})
+
+			// only append if the distance is equal or less than 5 km
 			if distKm <= 5 {
+				// filtering place by category if exists
 				if q.CategoryId != 0 {
 					if place.CategoryID == q.CategoryId {
 						places = append(places, place)

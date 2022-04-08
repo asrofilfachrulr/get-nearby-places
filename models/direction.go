@@ -90,13 +90,13 @@ func RandShiftLoc(l Location, dist float64) Location {
 		return Location{}
 	}
 
-	// shift vertically by half of given distance
+	// shift vertically by one a half of given distance
 	dFirst := vdirections[rand.Intn(2)]
-	loc := ShiftLoc(l, dist/2, dFirst, 0)
+	loc := ShiftLoc(l, dist/1.5, dFirst, 0)
 
-	// then shift horizonatallly by half of given distance
+	// then shift horizonatallly by one a half of given distance
 	dSecond := hdirections[rand.Intn(2)]
-	loc = ShiftLoc(loc, dist/2, 0, dSecond)
+	loc = ShiftLoc(loc, dist/1.5, 0, dSecond)
 
 	return loc
 }

@@ -25,6 +25,7 @@ type (
 		Longitude float64 `json:"longitude" validate:"required"`
 	}
 
+	// need to be seperated due different JSON struct tag
 	DataVillageReq struct {
 		Data []VillageRequest `json:"data" validate:"required"`
 	}
