@@ -18,7 +18,7 @@ Web service (API) untuk melakukan pencarian daftar tempat/place terdekat. Tempat
 
 ## NOTE   
 
-Kode menggunakan fitur generic yang ada pada golang versi 1.18. Selengkapnya tentang generic: 
+Kode telah menggunakan fitur generic yang ada pada golang versi 1.18. Selengkapnya tentang generic: 
 
 [Release Note Go 1.18](https://tip.golang.org/doc/go1.18#generics)   
 
