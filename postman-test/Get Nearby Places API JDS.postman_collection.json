@@ -11,11 +11,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8000/search?latitude=-6.879608&longitude=107.609587",
+					"raw": "localhost:8080/search?latitude=-6.879608&longitude=107.609587",
 					"host": [
 						"localhost"
 					],
-					"port": "8000",
+					"port": "8080",
 					"path": [
 						"search"
 					],
@@ -39,11 +39,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8000/search?latitude=-6.255486&longitude=106.920660",
+					"raw": "localhost:8080/search?latitude=-6.255486&longitude=106.920660",
 					"host": [
 						"localhost"
 					],
-					"port": "8000",
+					"port": "8080",
 					"path": [
 						"search"
 					],
@@ -67,11 +67,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8000/search?latitude=-7.056556&longitude=106.804209",
+					"raw": "localhost:8080/search?latitude=-7.056556&longitude=106.804209",
 					"host": [
 						"localhost"
 					],
-					"port": "8000",
+					"port": "8080",
 					"path": [
 						"search"
 					],
@@ -95,11 +95,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8000/search?latitude=-6.331997&longitude=108.312746",
+					"raw": "localhost:8080/search?latitude=-6.331997&longitude=108.312746",
 					"host": [
 						"localhost"
 					],
-					"port": "8000",
+					"port": "8080",
 					"path": [
 						"search"
 					],
@@ -123,11 +123,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8000/search?latitude=-7.368098&longitude=108.550905&category_id=9",
+					"raw": "localhost:8080/search?latitude=-7.368098&longitude=108.550905&category_id=9",
 					"host": [
 						"localhost"
 					],
-					"port": "8000",
+					"port": "8080",
 					"path": [
 						"search"
 					],
@@ -143,6 +143,38 @@
 						{
 							"key": "category_id",
 							"value": "9"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "@Wonoharjo, Pangandaran, Kab. Ciamis",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/search?longitude=108.628634&latitude=-7.681181&category_id=7",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "longitude",
+							"value": "108.628634"
+						},
+						{
+							"key": "latitude",
+							"value": "-7.681181"
+						},
+						{
+							"key": "category_id",
+							"value": "7"
 						}
 					]
 				}
