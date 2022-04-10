@@ -13,15 +13,15 @@ type DirectionH int
 // vertical shift toward DirectionV constants (south or north) means
 // latitude increased or decreased but longitude remains the same
 const (
-	North DirectionV = iota
-	South
+	North DirectionV = 1
+	South DirectionV = 2
 )
 
 // horizontal shift toward DirectionH constants (east or west) means
 // longitude increased or decreased but latitude remains the same
 const (
-	East DirectionH = iota
-	West
+	East DirectionH = 1
+	West DirectionH = 2
 )
 
 // grouping constants
@@ -51,29 +51,32 @@ func RadToDeg(rad float64) float64 {
 // pure function, returning new object location based given direction and distance
 func ShiftLoc(l Location, dist float64, dv DirectionV, dh DirectionH) Location {
 	if dv != 0 {
-		if dv == North {
+		switch dv {
+		case North:
 			// latitude is increased toward north
 			return Location{
 				Longitude: l.Longitude,
 				Latitude:  l.Latitude + LATITUDE_PER_METRE*dist,
 			}
-		} else if dv == South {
+		case South:
 			// latitude is decreased toward south
 			return Location{
 				Longitude: l.Longitude,
 				Latitude:  l.Latitude - LATITUDE_PER_METRE*dist,
 			}
+
 		}
 
 	} else if dh != 0 {
-		if dh == East {
+		switch dh {
+		case East:
 			// longitude is increased toward east
 			newLong := l.Longitude + LONGITUDE_PER_METRE(l.Latitude)*dist
 			return Location{
 				Longitude: newLong,
 				Latitude:  l.Latitude,
 			}
-		} else if dh == West {
+		case West:
 			// longitude is decreased toward west
 			newLong := l.Longitude - LONGITUDE_PER_METRE(l.Latitude)*dist
 			return Location{

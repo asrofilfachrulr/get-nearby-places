@@ -23,7 +23,7 @@ func SetupRouter(data models.BatchPlace) *gin.Engine {
 	})
 
 	r.GET("/", func(ctx *gin.Context) {
-		ctx.Redirect(http.StatusPermanentRedirect, "/swagger/index.html")
+		ctx.JSON(http.StatusOK, "mantap")
 	})
 
 	r.GET("/search", controller.GetNearby)
