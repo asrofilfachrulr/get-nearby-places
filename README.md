@@ -9,7 +9,8 @@ Kelas: Backend Golang
 
 ### Link  
 
-[Link API di Heroku (swagger)](https://get-nearby-places-jcc.herokuapp.com/swagger/index.html)   
+[Link API di Heroku (swagger)](https://get-nearby-places-jcc.herokuapp.com/swagger/index.html)   (sudah tidak aktif seiring free tier heroku sudah berhenti)  
+
 [Link Demo API](https://youtu.be/-zilA1NbZS8)
 
 ## Deskripsi API
