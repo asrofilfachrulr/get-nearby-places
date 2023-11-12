@@ -37,11 +37,12 @@ http://localhost:8080/
 
 ## NOTE   
 
-Kode telah menggunakan fitur generic yang ada pada golang versi 1.18. Selengkapnya tentang generic: 
+Kode telah menggunakan fitur generic yang mulai ada pada golang versi 1.18. Selengkapnya tentang generic: 
 
 [Release Note Go 1.18](https://tip.golang.org/doc/go1.18#generics)   
 
 
+Pastikan versi golang anda >= 1.18
 ## Disclamier  
 
 Tidak diizinkan menyalin/mengutip kode penuh/sebagian untuk apapun tugas JCC next batch atau batch saat ini (2) di kelas apapun.  
