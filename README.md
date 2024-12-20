@@ -5,7 +5,7 @@
 
 ### Informasi Peserta  
 
-Nama: Asrofil Fachrul Riidlo   
+Nama: 
 Kelas: Backend Golang 
 
 
